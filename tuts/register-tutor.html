@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join as Tutor • Tuts</title>
+<link rel="stylesheet" href="css/main.css">
+</head><body style="min-height:100dvh;display:grid;place-items:center;padding:2rem">
+<div class="glass" style="width:90%;max-width:420px;padding:3rem;border-radius:32px">
+  <h1 class="gradient-text" style="text-align:center;margin-bottom:2rem">Become a Tutor</h1>
+  <p style="text-align:center;color:var(--text-muted);margin-bottom:2rem">
+    Earn <strong>R500–R2000/week</strong> helping students
+  </p>
+  <form id="regForm">
+    <div class="input-group"><input type="text" required><label>Full Name</label></div>
+    <div class="input-group"><input type="email" required><label>Email</label></div>
+    <div class="input-group"><input type="tel" required><label>Phone</label></div>
+    <div class="input-group"><input type="text" required><label>Subjects you teach</label></div>
+    <div class="input-group"><input type="password" required><label>Password</label></div>
+    <button type="submit" class="btn btn-primary" style="width:100%;padding:1.4rem;margin-top:1.5rem;font-size:1.2rem">
+      Become a Tutor
+    </button>
+  </form>
+</div>
+<script src="js/auth.js"></script>
+<script>
+  document.getElementById('regForm').onsubmit = e => {
+    e.preventDefault();
+    const user = {
+      name: e.target[0].value,
+      email: e.target[1].value,
+      phone: e.target[2].value,
+      subjects: e.target[3].value,
+      password: e.target[4].value,
+      type: 'tutor',
+      joined: new Date().toLocaleDateString()
+    };
+    saveUser(user);
+    alert('Welcome, Tutor! Your profile is under review.');
+    location.href = 'dashboard-tutor.html';
+  };
+</script>
+</body></html>

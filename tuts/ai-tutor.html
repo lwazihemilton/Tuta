@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Tutor • Tuts</title>
+<link rel="stylesheet" href="css/main.css">
+<script src="https://unpkg.com/feather-icons"></script>
+</head><body style="display:flex;flex-direction:column;height:100dvh;overflow:hidden">
+<div class="mode-toggle" onclick="togglePremium()">Sun Icon Standard Mode</div>
+<header class="glass" style="padding:1.2rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:10">
+  <button onclick="history.back()" style="background:none;border:none;color:white"><i data-feather="arrow-left" style="width:28px;height:28px"></i></button>
+  <h2 class="gradient-text" style="margin:0;font-size:1.6rem">Grok AI Tutor <span style="font-size:0.9rem;color:var(--success)">R20/hr</span></h2>
+</header>
+<div class="chat-container" id="chat">
+  <div class="message ai">
+    <strong>Hey! I'm Grok</strong><br>
+    Your personal 24/7 AI tutor. Ask me anything — Maths, Physics, Accounting, Life Sciences...<br><br>
+    <span style="color:var(--accent-light)">Just type your question below</span>
+  </div>
+</div>
+<div class="input-bar">
+  <input type="text" id="aiQuery" placeholder="Ask me anything..." autofocus>
+  <button class="send-btn" onclick="sendMessage()">Send Icon</button>
+</div>
+<script src="js/auth.js"></script>
+<script src="js/fin.js"></script>
+</body></html>

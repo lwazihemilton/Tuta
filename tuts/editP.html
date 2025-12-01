@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile • Tuts</title>
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <div class="mode-toggle" onclick="togglePremium()"><span id="modeText">Standard Mode</span></div>
+
+  <header class="glass user-info container">
+    <div class="user-greeting"><strong>Edit Profile</strong></div>
+    <button class="btn" onclick="history.back()">Back</button>
+  </header>
+
+  <main class="container">
+    <div class="glass" style="text-align:center;padding:2rem;">
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" class="avatar large" style="width:120px;height:120px;border-radius:50%;margin-bottom:1rem;">
+      <label class="btn btn-secondary">Change Photo <input type="file" hidden></label>
+    </div>
+
+    <form class="glass" style="padding:2rem;margin-top:2rem;">
+      <div class="input-group"><input type="text" value="Thabo Mokoena" required><label>Full Name</label></div>
+      <div class="input-group"><input type="text" value="@thabo_maths"><label>Username</label></div>
+      <div class="input-group"><input type="email" value="thabo@tuts.ac.za"><label>Email</label></div>
+      <div class="input-group"><input type="tel" value="+27 71 234 5678"><label>Phone (WhatsApp)</label></div>
+      <div class="input-group"><textarea rows="3">Top Maths & Physics tutor at UJ • 4.9 stars • Helping students crush exams</textarea><label>Bio</label></div>
+
+      <div style="display:flex;gap:1rem;margin-top:2rem;">
+        <button type="submit" class="btn btn-secondary" style="flex:1;">Save Changes</button>
+        <button type="button" class="btn" onclick="history.back()" style="flex:1;">Cancel</button>
+      </div>
+    </form>
+  </main>
+
+  <div class="bottom-nav">
+    <a href="dashboard.html">Home</a>
+    <a href="findtutor.html">Search</a>
+    <a href="map.html">Map</a>
+    <a href="leaderboard.html">Top</a>
+  </div>
+
+  <script src="js/fin.js"></script>
+</body>
+</html>
