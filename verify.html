@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email Verified • Tuts</title>
+<link rel="stylesheet" href="css/main.css">
+<script src="https://unpkg.com/feather-icons"></script>
+</head><body style="min-height:100dvh;display:grid;place-items:center;background:var(--bg)">
+<div class="glass" style="text-align:center;padding:4rem 2.5rem;border-radius:36px;max-width:90%">
+  <i data-feather="check-circle" style="width:120px;height:120px;color:var(--success);stroke-width:2.5"></i>
+  <h1 class="gradient-text" style="margin:1.5rem 0;font-size:2.4rem">Email Verified!</h1>
+  <p style="color:var(--text-muted);font-size:1.1rem">You're all set. Welcome to Tuts!</p>
+  <a href="index.html" class="btn btn-primary" style="margin-top:2rem;padding:1.3rem 2rem">Continue to App</a>
+</div>
+<script>
+  const params = new URLSearchParams(location.search);
+  if (params.get('token')) {
+    fetch('https://api.tutsapp.co.za/auth/verify-email', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({token: params.get('token')})
+    }).then(() => localStorage.setItem('email_verified', 'true'));
+  }
+</script>
+<script src="js/fin.js"></script>
+</body></html>

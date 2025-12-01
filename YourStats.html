@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Stats • Tuts</title>
+
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --card: rgba(255, 255, 255, 0.09);
+      --card-hover: rgba(255, 255, 255, 0.16);
+      --text: #e0e0ff;
+      --text-muted: #a0a0cc;
+      --accent: #6e56cf;
+      --accent-light: #8b70ff;
+      --success: #00ff9d;
+      --gradient: linear-gradient(135deg, #6e56cf, #ff6bd6);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #bc13fe;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      background-image: 
+        radial-gradient(circle at 10% 90%, rgba(139,112,255,.35), transparent 50%),
+        radial-gradient(circle at 90% 10%, rgba(255,107,214,.35), transparent 50%);
+      padding-bottom: 100px;
+    }
+
+    .container { max-width: 540px; margin: 0 auto; padding: 1rem; }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(15,15,26,0.94);
+      backdrop-filter: blur(20px);
+      padding: 1.4rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    }
+
+    .user-greeting span { font-size: 0.95rem; opacity: 0.8; }
+    .user-greeting strong {
+      display: block;
+      font-size: 1.5rem;
+      background: linear-gradient(90deg, #fff, #d0c8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .user-greeting small { font-size: 0.9rem; color: var(--text-muted); }
+
+    .user-actions button {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.4rem;
+      position: relative;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 4px; right: 2px;
+      background: #ff4757;
+      color: white;
+      font-size: 0.7rem;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .avatar.float {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      border: 3px solid var(--accent-light);
+      box-shadow: 0 0 25px rgba(139,112,255,0.6);
+    }
+
+    /* Premium Toggle */
+    .mode-toggle {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      background: var(--card);
+      padding: 0.7rem 1.1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    /* Hero Title
+    .hero-title {
+      text-align: center;
+      margin: 2.5rem 0 2rem;
+    }
+    .hero-title h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      animation: pulse 4s infinite alternate;
+    }
+    .hero-title p { color: var(--text-muted); font-size: 1.1rem; }
+
+    /* Stats Grid */
+    .grid { display: grid; gap: 1.2rem; margin: 2rem 0; }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+
+    .stat-card {
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 1.6rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.3s;
+    }
+    .stat-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(110,86,207,0.3); }
+    .stat-icon { width: 40px; height: 40px; color: var(--accent-light); margin-bottom: 0.8rem; }
+    .stat-value { font-size: 2.2rem; font-weight: 800; color: white; }
+    .stat-change { display: block; margin-top: 0.5rem; font-size: 0.85rem; }
+    .stat-change.up { color: var(--success); }
+
+    /* Charts */
+    .chart-container {
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
+      padding: 1.8rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .chart-container h3 {
+      margin: 0 0 1.4rem;
+      font-size: 1.3rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* Table */
+    .table-container {
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
+      padding: 1.8rem;
+      overflow-x: auto;
+      margin: 2rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td { padding: 1rem 0.5rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    th { color: var(--text-muted); font-weight: 600; }
+    .badge.success { background: rgba(0,255,157,0.2); color: var(--success); padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.8rem; }
+
+    /* Goals & Achievements */
+    .goal-list, .achievement-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .goal-item {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.05);
+      padding: 1rem;
+      border-radius: 14px;
+    }
+    .progress-tag {
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .achievement-badge {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+    }
+    .achievement-badge i { width: 48px; height: 48px; color: var(--accent-light); margin-bottom: 0.5rem; }
+
+    /* FAB */
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 64px; height: 64px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 10px 30px rgba(110,86,207,0.6);
+      z-index: 999;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Premium Mode Toggle -->
+  <div class="mode-toggle" onclick="togglePremium()">
+    <i data-feather="sun" id="modeIcon" width="18"></i>
+    <span id="modeText">Standard Mode</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="user-greeting">
+      <span>Your Progress,</span>
+      <strong>Naledi</strong>
+      <small>@da_studdent</small>
+    </div>
+
+    <div class="user-actions">
+      <button aria-label="Notifications" onclick="togglePanel('alertsPanel')">
+        <i data-feather="bell"></i>
+        <span class="notification-badge">3</span>
+      </button>
+      <button aria-label="Messages" onclick="togglePanel('messagesPanel')">
+        <i data-feather="message-circle"></i>
+      </button>
+      <button onclick="history.back()">
+        <i data-feather="arrow-left"></i>
+      </button>
+    </div>
+
+    <div class="avatar-wrapper">
+      <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Naledi" class="avatar float">
+    </div>
+  </header>
+
+  <div class="container">
+
+    <section class="hero-title">
+      <h1 class="pulse">Your Learning Stats</h1>
+      <p>Track your growth. Level up faster.</p>
+    </section>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-4">
+      <div class="glass stat-card">
+        <i data-feather="calendar" class="stat-icon"></i>
+        <div class="stat-value">42</div>
+        <small>Total Sessions</small>
+        <span class="stat-change up">+12% this month</span>
+      </div>
+      <div class="glass stat-card">
+        <i data-feather="clock" class="stat-icon"></i>
+        <div class="stat-value">68.5</div>
+        <small>Hours Learned</small>
+        <span class="stat-change up">+8.2 hrs this week</span>
+      </div>
+      <div class="glass stat-card">
+        <i data-feather="star" class="stat-icon"></i>
+        <div class="stat-value">4.8/5.0</div>
+        <small>Average Rating</small>
+        <span class="stat-change">42 reviews</span>
+      </div>
+      <div class="glass stat-card">
+        <i data-feather="target" class="stat-icon"></i>
+        <div class="stat-value">7/12</div>
+        <small>Subjects Mastered</small>
+        <span class="stat-change">58% complete</span>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-2">
+      <div class="glass chart-container">
+        <h3><i data-feather="trending-up"></i> Progress Over Time</h3>
+        <canvas id="progressChart"></canvas>
+      </div>
+      <div class="glass chart-container">
+        <h3><i data-feather="bar-chart-2"></i> Subject Performance</h3>
+        <canvas id="subjectChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Recent Sessions -->
+    <div class="glass table-container">
+      <h3><i data-feather="clock"></i> Recent Sessions</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Tutor</th><th>Subject</th><th>Duration</th><th>Rating</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Nov 15</td><td>Dr. Lisa Nkosi</td><td>Mathematics</td><td>1.5 hrs</td><td>★★★★★</td><td><span class="badge success">Completed</span></td></tr>
+          <tr><td>Nov 13</td><td>Johan van der Merwe</td><td>Physics</td><td>2 hrs</td><td>★★★★☆</td><td><span class="badge success">Completed</span></td></tr>
+          <tr><td>Nov 10</td><td>Aisha Patel</td><td>English</td><td>1 hr</td><td>★★★★★</td><td><span class="badge success">Completed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Goals & Achievements -->
+    <div class="grid grid-2">
+      <div class="glass">
+        <h3><i data-feather="flag"></i> Learning Goals</h3>
+        <div class="goal-list">
+          <div class="goal-item"><span>Score 80%+ in Maths Final</span><span class="progress-tag" style="background:#22c55e33;color:#22c55e">75%</span></div>
+          <div class="goal-item"><span>Complete Physics Syllabus</span><span class="progress-tag" style="background:#f59e0b33;color:#f59e0b">60%</span></div>
+          <div class="goal-item"><span>Improve Essay Writing</span><span class="progress-tag" style="background:#3b82f633;color:#3b82f6">40%</span></div>
+        </div>
+      </div>
+
+      <div class="glass">
+        <h3><i data-feather="award"></i> Achievements</h3>
+        <div class="achievement-grid">
+          <div class="achievement-badge"><i data-feather="zap"></i><small>Quick Learner</small></div>
+          <div class="achievement-badge"><i data-feather="trending-up"></i><small>Consistency King</small></div>
+          <div class="achievement-badge"><i data-feather="book-open"></i><small>Top Reader</small></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Home FAB -->
+  <a href="dashboard.html" class="fab pulse">
+    <i data-feather="home" width="28"></i>
+  </a>
+
+  <footer>
+    <p>© 2025 <strong>Tuts</strong> • Made with love in South Africa</p>
+  </footer>
+
+  <script>
+    feather.replace();
+
+    // Toggle Premium Mode
+    function togglePremium() {
+      document.body.classList.toggle('premium-mode');
+      const text = document.getElementById('modeText');
+      const icon = document.getElementById('modeIcon');
+      text.textContent = document.body.classList.contains('premium-mode') ? 'Premium Mode' : 'Standard Mode';
+      icon.setAttribute('data-feather', document.body.classList.contains('premium-mode') ? 'moon' : 'sun');
+      feather.replace();
+    }
+
+    // Charts
+    new Chart(document.getElementById('progressChart'), {
+      type: 'line',
+      data: {
+        labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+          label: 'Progress %',
+          data: [45, 62, 78, 92, 97],
+          borderColor: '#00f3ff',
+          backgroundColor: 'rgba(0,243,255,0.15)',
+          tension: 0.4,
+          fill: true,
+          pointBackgroundColor: '#00f3ff',
+          pointRadius: 6,
+          borderWidth: 4
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { max: 100, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+    });
+
+    new Chart(document.getElementById('subjectChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Maths', 'Physics', 'English', 'Biology', 'History', 'Chem'],
+        datasets: [{
+          data: [95, 82, 88, 70, 65, 78],
+          backgroundColor: ['#00f3ff','#bc13fe','#22c55e','#f59e0b','#3b82f6','#a855f7'],
+          borderRadius: 10
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { max: 100 } } }
+    });
+  </script>
+</body>
+</html>
